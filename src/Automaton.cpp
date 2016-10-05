@@ -10,7 +10,6 @@ Automaton::Automaton (const Automaton& other) {
     function = other.function;
     lex = other.lex;
     LRStack = other.LRStack;
-    NodeIntStack = other.NodeIntStack;
     NodeStack = other.NodeStack;
 }
 
@@ -95,8 +94,10 @@ void Automaton::findStack(int len) {
         int pre = table->GOTO(i, c);
         if (pre == LRStack.front()) {
             LRStack.push_front(pre);
+            begin_stack.push(pre);
             findStack(len+1);
             LRStack.pop_front();
+            begin_stack.pop();
         }
     }
 
