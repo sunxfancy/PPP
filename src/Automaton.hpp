@@ -19,14 +19,22 @@ public:
 
     void init (LALRTable* ptable, AutoCallback func);
     void run ();
-    void run_from (int state);
+    void run_from (int state = -1);
 
     std::deque<int>& getLRStack() { return LRStack; }
     // begin stack for the map
     SharedStack<int> begin_stack;
+
+    int begin;
+    int now;
+    int end;
 private:
-    Token* reader(int x, int num);
-    void Shift(int x, int t, void* ptr);
+    Token* reader();
+    Token* reader(int x);
+    Token** tokens;
+    int max_stack;
+
+    void Shift(int x, Token* t);
 
     // 三个参数分别是，要规约的语法项id，规约时的父节点
     int Reduce(int x);
@@ -41,8 +49,7 @@ private:
 
     // 分析栈
     std::deque<int> LRStack;
-    // 节点栈
-    std::deque<int> NodeIntStack;
+
     std::deque<void*> NodeStack;
 
 
