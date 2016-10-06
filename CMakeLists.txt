@@ -17,3 +17,4 @@ SET (CMAKE_CXX_FLAGS_RELWITHDEBINFO "-O2 -g")
 SET (EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/bin)
 
 add_executable(ppp ${source_files})
+target_link_libraries(ppp dl)
