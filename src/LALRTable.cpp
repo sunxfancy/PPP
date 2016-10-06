@@ -74,6 +74,10 @@ void LALRTable::Save(const char* path) {
 
 void LALRTable::Load(const char* path) {
     std::ifstream is(path, std::ios::in | std::ios::binary);
+    Load(is);
+}
+
+void LALRTable::Load(std::istream& is) {
     cereal::PortableBinaryInputArchive iarchive(is);
     iarchive( cereal::make_nvp("myData", *this) );
 }

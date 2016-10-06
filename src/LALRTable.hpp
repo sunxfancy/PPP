@@ -9,6 +9,7 @@
 #define LALR_TABLE_H
 
 #include <vector>
+#include <istream>
 #include <cereal/types/vector.hpp>
 
 using namespace std;
@@ -28,6 +29,7 @@ public:
 
     void Save(const char* path);
     void Load(const char* path); // 需要新建一个对象,然后执行Load方法
+    void Load(std::istream& is);
 
     // 经过调整的总数，包含结束符0
     int constSum; // Vt的总数
