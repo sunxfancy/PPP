@@ -17,7 +17,7 @@ public:
     Automaton (const Automaton&);
     virtual ~Automaton ();
 
-    void init (LALRTable* ptable, AutoCallback func);
+    void init (LALRTable* ptable, AutoCallback func, Token** data);
     void run ();
     void run_from (int state = -1);
 
@@ -44,8 +44,6 @@ private:
     /* data */
     LALRTable* table;
     AutoCallback function;
-    // 词法分析程序
-    LexInterface* lex;
 
     // 分析栈
     std::deque<int> LRStack;

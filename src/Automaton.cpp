@@ -8,7 +8,6 @@ Automaton::Automaton (ParallelWorker* pm) {
 Automaton::Automaton (const Automaton& other) {
     table = other.table;
     function = other.function;
-    lex = other.lex;
     LRStack = other.LRStack;
     NodeStack = other.NodeStack;
 }
@@ -17,9 +16,10 @@ Automaton::~Automaton () {
 
 }
 
-void Automaton::init(LALRTable* ptable, AutoCallback func) {
+void Automaton::init(LALRTable* ptable, AutoCallback func, Token** data) {
     table = ptable;
     function = func;
+    tokens = data;
 }
 
 void Automaton::run() {

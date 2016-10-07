@@ -5,7 +5,7 @@
 #include "Automaton.hpp"
 #include "SharedStack.hpp"
 #include <map>
-
+#include <vector>
 
 
 
@@ -16,9 +16,15 @@ public:
         this->func = func;
     }
 
+    void init(int begin, int end, Token** data) {
+        this->begin = begin;
+        this->end = end;
+        this->tokens = data;
+    }
+
     void run() {
         Automaton ato(this);
-        ato.init(ptable, func);
+        ato.init(ptable, func, tokens);
         ato.run();
     }
 
@@ -32,6 +38,8 @@ private:
     std::map< SharedStack<int>*, Automaton* > be_map;
     LALRTable* ptable;
     AutoCallback func;
+    Token** tokens;
+    int begin, end;
 };
 
 
@@ -39,8 +47,21 @@ private:
 
 class ParallelManager {
 public:
+    ParallelManager() {
+        lex = LexInterface::Create();
+    }
 
+    void split() {
 
+    }
+
+    void run_lex(const string& path) {
+
+    }
+private:
+    LexInterface* lex;
+
+    std::vector<Token*> tokens;
 };
 
 

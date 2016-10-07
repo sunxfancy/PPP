@@ -8,7 +8,7 @@ add_subdirectory(Lex)
 file(GLOB_RECURSE source_files ${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp)
 # list(REMOVE_ITEM  source_files ${CMAKE_CURRENT_SOURCE_DIR}/src/main.cpp)
 
-include_directories(third-party/cereal-1.1.2)
+include_directories(Lex/include third-party/cereal-1.1.2)
 
 SET (CMAKE_CXX_COMPILER_ENV_VAR "clang++")
 SET (CMAKE_CXX_FLAGS "-std=c++11")

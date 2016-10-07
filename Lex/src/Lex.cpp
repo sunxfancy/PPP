@@ -88,7 +88,9 @@ void Lex::InitCore() {
     core->Init(mainDFA,pEClass);
 }
 
+void Lex::loadTable(char* file_data) {
 
+}
 
 
 DFA* Lex::combineAllDFA(){
