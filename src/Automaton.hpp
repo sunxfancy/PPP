@@ -8,12 +8,12 @@
 #include "LexInterface.h"
 
 class LALRTable;
-class ParallelManager;
+class ParallelWorker;
 typedef void* (*AutoCallback)(int bnf_num, const std::vector<void*>& args);
 
 class Automaton {
 public:
-    Automaton (ParallelManager* pm);
+    Automaton (ParallelWorker* pm);
     Automaton (const Automaton&);
     virtual ~Automaton ();
 
@@ -49,11 +49,9 @@ private:
 
     // 分析栈
     std::deque<int> LRStack;
-
     std::deque<void*> NodeStack;
 
-
-    ParallelManager* pm;
+    ParallelWorker* pm;
 };
 
 

@@ -1,0 +1,7 @@
+*.*~
+.fuse*
+*.sublime-*
+bin/
+build/
+
+

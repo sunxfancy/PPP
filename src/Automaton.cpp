@@ -1,7 +1,7 @@
 #include "Automaton.hpp"
 #include "LALRTable.hpp"
 #include "ParallelManager.hpp"
-Automaton::Automaton (ParallelManager* pm) {
+Automaton::Automaton (ParallelWorker* pm) {
     this->pm = pm;
 }
 

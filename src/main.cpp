@@ -13,12 +13,21 @@ extern "C" {
     getAction_t getAction;
 }
 
+const char* help_msg = "Please give the input file\n";
 
 int main(int argc, char const *argv[]) {
     /* code */
     void *handle;
     char *error;
-    handle = dlopen (argv[1], RTLD_LAZY);
+    if (argc <= 0 || argc > 2) {
+        fprintf (stderr, "%s\n", help_msg);
+        return 0;
+    }
+    if (argc == 1) {
+        handle = dlopen ("libparser.so", RTLD_LAZY);
+    } else {
+        handle = dlopen (argv[2], RTLD_LAZY);
+    }
     if (!handle) {
         fprintf (stderr, "%s\n", dlerror());
         exit(1);
@@ -33,6 +42,8 @@ int main(int argc, char const *argv[]) {
 
     std::istrstream is_lex(getLexTable());
     std::istrstream is_parser(getLALRTable());
+
+
 
     dlclose(handle);
     return 0;

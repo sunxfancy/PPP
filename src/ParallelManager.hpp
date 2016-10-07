@@ -7,11 +7,18 @@
 #include <map>
 
 
-class ParallelManager {
+
+
+class ParallelWorker {
 public:
+    ParallelWorker(LALRTable* ptable, AutoCallback func) {
+        this->ptable = ptable;
+        this->func = func;
+    }
+
     void run() {
         Automaton ato(this);
-        // ato.init()
+        ato.init(ptable, func);
         ato.run();
     }
 
@@ -23,6 +30,16 @@ public:
 private:
     // 并行支持
     std::map< SharedStack<int>*, Automaton* > be_map;
+    LALRTable* ptable;
+    AutoCallback func;
+};
+
+
+
+
+class ParallelManager {
+public:
+
 
 };
 

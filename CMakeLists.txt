@@ -2,6 +2,8 @@ cmake_minimum_required(VERSION 2.8)
 
 project(ppp)
 
+add_subdirectory(Lex)
+
 # src files and make exe
 file(GLOB_RECURSE source_files ${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp)
 # list(REMOVE_ITEM  source_files ${CMAKE_CURRENT_SOURCE_DIR}/src/main.cpp)
@@ -17,4 +19,4 @@ SET (CMAKE_CXX_FLAGS_RELWITHDEBINFO "-O2 -g")
 SET (EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/bin)
 
 add_executable(ppp ${source_files})
-target_link_libraries(ppp dl)
+target_link_libraries(ppp lex dl)
