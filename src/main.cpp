@@ -2,16 +2,14 @@
 #include <stdlib.h>
 #include <dlfcn.h>
 #include <strstream>
+#include "Automaton.hpp"
 
 typedef const char* (*getLexTable_t)();
 typedef const char* (*getLALRTable_t)();
-typedef const char* (*getAction_t)();
 
-extern "C" {
-    getLexTable_t getLexTable;
-    getLALRTable_t getLALRTable;
-    getAction_t getAction;
-}
+getLexTable_t getLexTable;
+getLALRTable_t getLALRTable;
+AutoCallback getAction;
 
 const char* help_msg = "Please give the input file\n";
 
@@ -33,17 +31,17 @@ int main(int argc, char const *argv[]) {
         exit(1);
     }
     dlerror();    /* Clear any existing error */
-    getLexTable = (getLexTable_t)dlsym(handle, "getLexTable");
+    getLexTable = (getLexTable_t)dlsym(handle, "__getLexTable");
     if ((error = dlerror()) != NULL)  {
         fprintf (stderr, "%s\n", error);
         exit(1);
     }
-    getLALRTable = (getLALRTable_t)dlsym(handle, "getLALRTable");
+    getLALRTable = (getLALRTable_t)dlsym(handle, "__getLALRTable");
 
     std::istrstream is_lex(getLexTable());
     std::istrstream is_parser(getLALRTable());
 
-
+    getAction= (AutoCallback)dlsym(handle, "__ppp_script");
 
     dlclose(handle);
     return 0;

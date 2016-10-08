@@ -6,8 +6,8 @@
 #include "SharedStack.hpp"
 #include <map>
 #include <vector>
-
-
+#include <fstream>
+#include <strstream>
 
 class ParallelWorker {
 public:
@@ -47,21 +47,41 @@ private:
 
 class ParallelManager {
 public:
-    ParallelManager() {
+    ParallelManager(std::istrstream l, std::istrstream p, AutoCallback func) {
         lex = LexInterface::Create();
+        this->func = func;
     }
 
-    void split() {
+    void split(int n) {
+        int size = data.size();
+        for (int i = 0; i < n; ++i) {
+            ParallelWorker* pm = new ParallelWorker(ptable, func);
+        }
+    }
+
+    void run_lex(const std::string& path) {
+        fileReader(path);
+        lex->Init(data.c_str());
 
     }
 
-    void run_lex(const string& path) {
+    void fileReader(const std::string& path) {
+        std::ifstream t(path, std::ios::binary);
 
+        t.seekg(0, std::ios::end);
+        data.reserve(t.tellg());
+        t.seekg(0, std::ios::beg);
+
+        data.assign((std::istreambuf_iterator<char>(t)),
+                    std::istreambuf_iterator<char>());
     }
+
 private:
     LexInterface* lex;
-
+    LALRTable* ptable;
+    string data;
     std::vector<Token*> tokens;
+    AutoCallback func;
 };
 
 
