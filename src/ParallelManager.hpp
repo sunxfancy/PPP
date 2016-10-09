@@ -1,13 +1,14 @@
 #ifndef PARALLEL_MANAGER_HPP
 #define PARALLEL_MANAGER_HPP
 
-
 #include "Automaton.hpp"
 #include "SharedStack.hpp"
 #include <map>
 #include <vector>
 #include <fstream>
 #include <strstream>
+#include <thread>
+#include <functional>
 
 class ParallelWorker {
 public:
@@ -42,8 +43,9 @@ private:
     int begin, end;
 };
 
-
-
+void thread_task(ParallelWorker* pw) {
+    pw->run();
+}
 
 class ParallelManager {
 public:
@@ -54,15 +56,27 @@ public:
 
     void split(int n) {
         int size = data.size();
+        int psize = size / n;
         for (int i = 0; i < n; ++i) {
             ParallelWorker* pm = new ParallelWorker(ptable, func);
+            if (i == n-1)
+                pm->init(i*psize, size, tokens.data());
+            else
+                pm->init(i*psize, (i+1)*psize, tokens.data());
+            std::thread* t = new std::thread(thread_task, pm);
+            threads.push_back(t);
+        }
+        for (auto* t : threads) {
+            t->join();
+            delete t;
         }
     }
+
+
 
     void run_lex(const std::string& path) {
         fileReader(path);
         lex->Init(data.c_str());
-
     }
 
     void fileReader(const std::string& path) {
@@ -81,6 +95,7 @@ private:
     LALRTable* ptable;
     string data;
     std::vector<Token*> tokens;
+    std::vector<std::thread*> threads;
     AutoCallback func;
 };
 
