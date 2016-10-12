@@ -5,6 +5,7 @@
 #include "Regex.h"
 #include <list>
 #include <fstream>
+#include <istream>
 #include <cereal/types/vector.hpp>
 #include <cereal/types/map.hpp>
 #include <cereal/archives/portable_binary.hpp>
@@ -67,10 +68,7 @@ private:
 	// bool Check(const echar_t* data);
 	vector<set<node*>> listSet;
 
-	EquivalenceClass* pEClass;
-
     Regex* re;
-
     map<int,int> stopState;
 public:
 	int Top;
@@ -79,7 +77,7 @@ public:
 	vector<int>	m_base;
 	vector<int>	m_next;
 	vector<int>	m_check;
-
+	EquivalenceClass* pEClass;
 // 	int state_base; // 表示状态初始状态的开始标号 已弃用
 // 	void setState_base(int _b) { state_base = _b; }
 // 	int getState_base() { return state_base; }
@@ -106,6 +104,10 @@ public:
 
     void Load(const char* path) {
         std::ifstream is(path, std::ios::in | std::ios::binary);
+        Load(is);
+    }
+
+	void Load(std::istream& is) {
         cereal::PortableBinaryInputArchive iarchive(is);
         iarchive( cereal::make_nvp("myData", *this) );
     }

@@ -8,6 +8,7 @@
 #include <iostream>
 #include <fstream>
 #include "RuleManager.h"
+#include <strstream>
 
 using namespace std;
 
@@ -89,7 +90,11 @@ void Lex::InitCore() {
 }
 
 void Lex::loadTable(char* file_data) {
-
+	istrstream is(file_data);
+	mainDFA = new DFA();
+	mainDFA->Load(is);
+	pEClass = mainDFA->pEClass;
+	InitCore();
 }
 
 
