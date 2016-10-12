@@ -1,9 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <dlfcn.h>
-#include <strstream>
 #include "Automaton.hpp"
-
+#include "ParallelManager.hpp"
 typedef const char* (*getLexTable_t)();
 typedef const char* (*getLALRTable_t)();
 
@@ -13,11 +12,13 @@ AutoCallback getAction;
 
 const char* help_msg = "Please give the input file\n";
 
+
+
 int main(int argc, char const *argv[]) {
     /* code */
     void *handle;
     char *error;
-    if (argc <= 0 || argc > 2) {
+    if (argc <= 0 || argc > 3) {
         fprintf (stderr, "%s\n", help_msg);
         return 0;
     }
@@ -26,6 +27,7 @@ int main(int argc, char const *argv[]) {
     } else {
         handle = dlopen (argv[2], RTLD_LAZY);
     }
+
     if (!handle) {
         fprintf (stderr, "%s\n", dlerror());
         exit(1);
@@ -38,11 +40,17 @@ int main(int argc, char const *argv[]) {
     }
     getLALRTable = (getLALRTable_t)dlsym(handle, "__getLALRTable");
 
-    std::istrstream is_lex(getLexTable());
-    std::istrstream is_parser(getLALRTable());
-
     getAction= (AutoCallback)dlsym(handle, "__ppp_script");
 
+    ParallelManager* pm = new ParallelManager(getLexTable(), getLALRTable(), getAction);
+    pm->run_lex(argv[1]);
+
+    if (argc == 3)
+        pm->split(atoi(argv[3]));
+    else
+        pm->split(8);
+
     dlclose(handle);
+    delete pm;
     return 0;
 }

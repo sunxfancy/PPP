@@ -40,7 +40,7 @@ public:
     /// @brief 获取总共有多少个词法规则
     virtual int getRuleSize() = 0;
 
-	virtual void loadTable(char* file_data) = 0;
+	virtual void loadTable(const char* file_data) = 0;
 
 	static LexInterface* Create();
 };

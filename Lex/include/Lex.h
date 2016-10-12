@@ -52,7 +52,7 @@ public:
     /// @brief get the rules sum
     virtual int getRuleSize();
 
-	virtual void loadTable(char* file_data);
+	virtual void loadTable(const char* file_data);
 
     /// @brief init the main DFA core
     void InitCore();

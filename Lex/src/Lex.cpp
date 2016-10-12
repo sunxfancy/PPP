@@ -89,7 +89,7 @@ void Lex::InitCore() {
     core->Init(mainDFA,pEClass);
 }
 
-void Lex::loadTable(char* file_data) {
+void Lex::loadTable(const char* file_data) {
 	istrstream is(file_data);
 	mainDFA = new DFA();
 	mainDFA->Load(is);

@@ -24,4 +24,4 @@ target_link_libraries(exiconv iconv charsetdetect charset)
 install(TARGETS exiconv ARCHIVE DESTINATION lib)
 
 
-add_subdirectory(test)
+# add_subdirectory(test)
