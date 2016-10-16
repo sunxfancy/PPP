@@ -33,9 +33,10 @@ public:
         be_map[&(ato->begin_stack)] = ato->getLRStack();
     }
 
-    // 并行支持
-    std::map< SharedStack<int>*, std::deque<int> > be_map;
+    std::map< std::deque<int>, Automaton* >& getBeginEndMap() { return be_map; }
 private:
+    // 并行支持
+    std::map< std::deque<int>, Automaton* > be_map;
     LALRTable* ptable;
     AutoCallback func;
     Token** tokens;
