@@ -23,7 +23,7 @@ public:
 
     std::deque<int>& getLRStack() { return LRStack; }
     // begin stack for the map
-    SharedStack<int> begin_stack;
+    std::deque<int> begin_stack;
 
     int begin;
     int now;

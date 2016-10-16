@@ -29,7 +29,6 @@ void Automaton::run() {
 }
 
 void Automaton::run_from (int state) {
-    SharedStack<int> st;
     bool finished = false;
     Token* t = reader();
 
@@ -94,13 +93,25 @@ void Automaton::findStack(int len) {
         int pre = table->GOTO(i, c);
         if (pre == LRStack.front()) {
             LRStack.push_front(pre);
-            begin_stack.push(pre);
+            begin_stack.push_front(pre);
             findStack(len+1);
             LRStack.pop_front();
-            begin_stack.pop();
+            begin_stack.pop_front();
+        }
+        
+        // TODO: VMap need check, for Vn translat
+        for ( int j = table->constSum; j <= table->VSum; ++j ) {
+            int pre = table->GOTO(i, j);
+            if (pre == LRStack.front()) {
+                LRStack.push_front(pre);
+                begin_stack.push_front(pre);
+                findStack(len+1);
+                LRStack.pop_front();
+                begin_stack.pop_front();
+            }
         }
     }
-
+    
 }
 
 void Automaton::Shift(int x, Token* t){

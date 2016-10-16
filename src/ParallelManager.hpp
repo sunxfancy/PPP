@@ -31,12 +31,13 @@ public:
 
     void finish(Automaton* other) {
         Automaton* new_ato = new Automaton(*other);
-        be_map[&(new_ato->begin_stack)] = new_ato;
+        be_map[new_ato->begin_stack] = new_ato;
     }
 
+    std::map< std::deque<int>, Automaton* >& getBeginEndMap() { return be_map; }
 private:
     // 并行支持
-    std::map< SharedStack<int>*, Automaton* > be_map;
+    std::map< std::deque<int>, Automaton* > be_map;
     LALRTable* ptable;
     AutoCallback func;
     Token** tokens;
