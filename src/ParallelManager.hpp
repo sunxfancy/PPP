@@ -29,14 +29,13 @@ public:
         ato.run();
     }
 
-    void finish(Automaton* other) {
-        Automaton* new_ato = new Automaton(*other);
-        be_map[&(new_ato->begin_stack)] = new_ato;
+    void finish(Automaton* ato) {
+        be_map[&(ato->begin_stack)] = ato->getLRStack();
     }
 
-private:
     // 并行支持
-    std::map< SharedStack<int>*, Automaton* > be_map;
+    std::map< SharedStack<int>*, std::deque<int> > be_map;
+private:
     LALRTable* ptable;
     AutoCallback func;
     Token** tokens;
@@ -50,7 +49,6 @@ public:
     ParallelManager(const char* l, const char* p, AutoCallback func) ;
     void split(int n);
     void run_lex(const std::string& path);
-    void fileReader(const std::string& path) ;
 
 private:
     LexInterface* lex;
@@ -59,4 +57,7 @@ private:
     std::vector<Token*> tokens;
     std::vector<std::thread*> threads;
     AutoCallback func;
+
+    void combine(std::vector<ParallelWorker*>& pws);
+    void fileReader(const std::string& path);
 };

@@ -16,6 +16,7 @@ ParallelManager::ParallelManager(const char* l, const char* p, AutoCallback func
 void ParallelManager::split(int n) {
     int size = data.size();
     int psize = size / n;
+    std::vector<ParallelWorker*> pws;
     for (int i = 0; i < n; ++i) {
         ParallelWorker* pm = new ParallelWorker(ptable, func);
         if (i == n-1)
@@ -23,11 +24,19 @@ void ParallelManager::split(int n) {
         else
             pm->init(i*psize, (i+1)*psize, tokens.data());
         std::thread* t = new std::thread(thread_task, pm);
+        pws.push_back(pm);
         threads.push_back(t);
     }
+
     for (auto* t : threads) {
         t->join();
         delete t;
+    }
+
+    combine(pws);
+
+    for (auto* p : pws) {
+        delete p;
     }
 }
 
@@ -47,4 +56,8 @@ void ParallelManager::fileReader(const std::string& path) {
 
     data.assign((std::istreambuf_iterator<char>(t)),
                 std::istreambuf_iterator<char>());
+}
+
+void ParallelManager::combine(std::vector<ParallelWorker*>& pws) {
+
 }
