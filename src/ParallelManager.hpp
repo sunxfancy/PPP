@@ -30,7 +30,8 @@ public:
     }
 
     void finish(Automaton* ato) {
-        be_map[&(ato->begin_stack)] = ato->getLRStack();
+        Automaton* new_ato = new Automaton(*ato);
+        be_map[ato->begin_stack] = ato;
     }
 
     std::map< std::deque<int>, Automaton* >& getBeginEndMap() { return be_map; }
