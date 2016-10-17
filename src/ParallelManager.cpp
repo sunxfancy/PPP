@@ -1,6 +1,6 @@
 #include "ParallelManager.hpp"
 #include <thread>
-
+#include "Combine.hpp"
 
 void thread_task(ParallelWorker* pw) {
     pw->run();
@@ -59,5 +59,9 @@ void ParallelManager::fileReader(const std::string& path) {
 }
 
 void ParallelManager::combine(std::vector<ParallelWorker*>& pws) {
-
+    auto p = pws.begin();
+    Combine comb(*p);
+    for (++p; p != pws.end(); ++p) {
+        comb.combineOutput(*p);
+    }
 }
