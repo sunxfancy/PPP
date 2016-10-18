@@ -1,16 +1,21 @@
 #include "ParallelManager.hpp"
 #include <thread>
 #include "Combine.hpp"
+#include <strstream>
+#include "LALRTable.hpp"
 
 void thread_task(ParallelWorker* pw) {
     pw->run();
 }
 
 
-ParallelManager::ParallelManager(const char* l, const char* p, AutoCallback func) {
+ParallelManager::ParallelManager(const char* l, size_t ls, const char* p, size_t ps, AutoCallback func) {
     lex = LexInterface::Create();
     this->func = func;
-    lex->loadTable(l);
+    lex->loadTable(l, ls);
+    ptable = new LALRTable();
+    istrstream is(p, ps);
+    ptable->Load(is);
 }
 
 void ParallelManager::split(int n) {
@@ -45,6 +50,9 @@ void ParallelManager::split(int n) {
 void ParallelManager::run_lex(const std::string& path) {
     fileReader(path);
     lex->setData(data.c_str());
+    for (auto* t = lex->Read(); t->type != -1; t = lex->Read()) {
+        tokens.push_back(*t);
+    }
 }
 
 void ParallelManager::fileReader(const std::string& path) {

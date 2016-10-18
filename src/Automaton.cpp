@@ -16,7 +16,7 @@ Automaton::~Automaton () {
 
 }
 
-void Automaton::init(LALRTable* ptable, AutoCallback func, Token** data) {
+void Automaton::init(LALRTable* ptable, AutoCallback func, const Token* data) {
     table = ptable;
     function = func;
     tokens = data;
@@ -30,7 +30,7 @@ void Automaton::run() {
 
 void Automaton::run_from (int state) {
     bool finished = false;
-    Token* t = reader();
+    const Token* t = reader();
 
     if (state != -1)
         LRStack.push_back(state); // push the begin state
@@ -87,7 +87,7 @@ void Automaton::findStack(int len) {
     }
 
     // find where the state from
-    Token* t = reader(begin-len);
+    const Token* t = reader(begin-len);
     int c = t->type;
     for (int i=0; i<=table->stateSum; ++i ) {
         int pre = table->GOTO(i, c);
@@ -98,7 +98,7 @@ void Automaton::findStack(int len) {
             LRStack.pop_front();
             begin_stack.pop_front();
         }
-        
+
         // TODO: VMap need check, for Vn translat
         for ( int j = table->constSum; j <= table->VSum; ++j ) {
             int pre = table->GOTO(i, j);
@@ -111,10 +111,10 @@ void Automaton::findStack(int len) {
             }
         }
     }
-    
+
 }
 
-void Automaton::Shift(int x, Token* t){
+void Automaton::Shift(int x, const Token* t){
     // for debug
     auto& fout = cout;
     fout << "------------------------" << endl;
@@ -151,14 +151,14 @@ int Automaton::Reduce(int x){
 }
 
 
-Token* Automaton::reader() {
+const Token* Automaton::reader() {
     return reader(now++);
 }
 
 
-Token* Automaton::reader(int x) {
+const Token* Automaton::reader(int x) {
     if (x >= begin && x < end) {
-        return tokens[x];
+        return &tokens[x];
     }
     return 0;
 }

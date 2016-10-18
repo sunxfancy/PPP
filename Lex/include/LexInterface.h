@@ -8,6 +8,8 @@
 #ifndef LEX_INTERFACE_H
 #define LEX_INTERFACE_H
 
+#include <stdlib.h>
+
 //it's a token for return
 struct Token
 {
@@ -40,7 +42,7 @@ public:
     /// @brief 获取总共有多少个词法规则
     virtual int getRuleSize() = 0;
 
-	virtual void loadTable(const char* file_data) = 0;
+	virtual void loadTable(const char* file_data, size_t size) = 0;
 
 	static LexInterface* Create();
 };

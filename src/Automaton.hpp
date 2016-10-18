@@ -17,7 +17,7 @@ public:
     Automaton (const Automaton&);
     virtual ~Automaton ();
 
-    void init (LALRTable* ptable, AutoCallback func, Token** data);
+    void init (LALRTable* ptable, AutoCallback func, const Token* data);
     void run ();
     void run_from (int state = -1);
 
@@ -29,12 +29,12 @@ public:
     int now;
     int end;
 private:
-    Token* reader();
-    Token* reader(int x);
-    Token** tokens;
+    const Token* reader();
+    const Token* reader(int x);
+    const Token* tokens;
     int max_stack;
 
-    void Shift(int x, Token* t);
+    void Shift(int x, const Token* t);
 
     // 三个参数分别是，要规约的语法项id，规约时的父节点
     int Reduce(int x);
