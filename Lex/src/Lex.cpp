@@ -8,7 +8,7 @@
 #include <iostream>
 #include <fstream>
 #include "RuleManager.h"
-#include <strstream>
+#include <sstream>
 
 using namespace std;
 
@@ -90,7 +90,8 @@ void Lex::InitCore() {
 }
 
 void Lex::loadTable(const char* file_data, size_t size) {
-	istrstream is(file_data, size);
+	string str(file_data, size);
+	istringstream is(str, ios_base::in | ios_base::binary);
 	mainDFA = new DFA();
 	mainDFA->pEClass = new EquivalenceClass();
 	mainDFA->Load(is);

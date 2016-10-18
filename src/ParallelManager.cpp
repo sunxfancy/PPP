@@ -1,8 +1,14 @@
 #include "ParallelManager.hpp"
 #include <thread>
 #include "Combine.hpp"
-#include <strstream>
+#include <sstream>
+#include <iostream>
 #include "LALRTable.hpp"
+
+using namespace std;
+
+extern
+void HexOutput(const char* buf, size_t size);
 
 void thread_task(ParallelWorker* pw) {
     pw->run();
@@ -14,7 +20,8 @@ ParallelManager::ParallelManager(const char* l, size_t ls, const char* p, size_t
     this->func = func;
     lex->loadTable(l, ls);
     ptable = new LALRTable();
-    istrstream is(p, ps);
+    string str(p, ps);
+	istringstream is(str, ios_base::in | ios_base::binary);
     ptable->Load(is);
 }
 

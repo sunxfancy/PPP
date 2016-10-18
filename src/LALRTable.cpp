@@ -6,14 +6,13 @@
 */
 
 #include "LALRTable.hpp"
-#include <iostream>
 #include <fstream>
 #include <cereal/archives/portable_binary.hpp>
-
+#include <iostream>
 
 LALRTable::LALRTable() {
-
 }
+
 
 LALRTable::LALRTable(const LALRTable& other){
 
@@ -32,21 +31,29 @@ bool LALRTable::operator==(const LALRTable& other){
 }
 
 
+// 判断优先级，返回true说明选移入，false选规约
+bool LALRTable::PdPriority() { // 非终结符id, 当前字符
+	return false;
+}
+
+void LALRTable::BuildReduce() {
+
+}
+
+void LALRTable::BuildTable(vector<ItemCollection*> LALRItems){
+
+}
 
 char LALRTable::ACTION(int state, int id){
-    if (state < 0 || state >= stateSum) return 0;
-    if (id < 0 || id >= constSum) return 0;
-    return Action[state][id];
+	return 0;
 }
 
 int LALRTable::GOTO(int state, int id){
-    if (state < 0 || state >= stateSum) return 0;
-    if (id < 0 || id >= VSum) return 0;
-    return Goto[state][id];
+	return 0;
 }
 
 void LALRTable::printTable() {
-    auto& fout = std::cout;
+    auto& fout = cerr;
     fout << "=========== LALR TABLE ==========" << endl;
     for (int s = 0; s < VSum; ++s) {
         fout << "\t" << s;

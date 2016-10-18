@@ -1,5 +1,5 @@
 /*
-* @Author: sxf
+* @Author: 笑凡
 * @Date:   2014-12-31 09:31:22
 * @Last Modified by:   sxf
 * @Last Modified time: 2015-12-11 19:30:36
@@ -8,14 +8,14 @@
 #ifndef LALR_TABLE_H
 #define LALR_TABLE_H
 
-#include <vector>
-#include <istream>
+#include "LRTable.h"
 #include <cereal/types/vector.hpp>
 
-using namespace std;
+class BNFParser;
 
-class LALRTable
+class LALRTable : public LRTable
 {
+
 public:
     LALRTable();
     LALRTable(const LALRTable& other);
@@ -23,6 +23,7 @@ public:
     LALRTable& operator=(const LALRTable& other);
     bool operator==(const LALRTable& other);
 
+    virtual void BuildTable(vector<ItemCollection*>);
     virtual char ACTION(int, int);
     virtual int GOTO(int, int);
     virtual void printTable();
@@ -37,12 +38,16 @@ public:
     int VSum;     // V的总数
     vector <int> bnf_size; // 每条bnf范式的长度
     vector <int> bnf_Vn; // 每条bnf范式的长度
+
 private:
+    void BuildReduce();
+    bool PdPriority();
+    BNFParser* bnfparser;
+
     vector < vector <int> > Goto;
     vector < vector <char> > Action;
 
     friend class cereal::access;
-
     template<class Archive>
     void serialize(Archive &ar)
     {

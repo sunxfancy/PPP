@@ -16,6 +16,7 @@ AutoCallback getAction;
 
 const char* help_msg = "Please give the input file\n";
 
+extern
 void HexOutput(const char* buf, size_t size)
 {
     printf("The Hex output of data:\n");
