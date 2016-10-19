@@ -26,6 +26,8 @@ public:
     void run() {
         Automaton ato(this);
         ato.init(ptable, func, tokens);
+        ato.begin = ato.now = begin;
+        ato.end = end;
         ato.run();
     }
 

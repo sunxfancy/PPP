@@ -39,7 +39,7 @@ private:
     // 三个参数分别是，要规约的语法项id，规约时的父节点
     int Reduce(int x);
 
-    void findStack(int len);
+    void findStack(int len, int shift_size);
 
     /* data */
     LALRTable* table;

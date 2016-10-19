@@ -9,6 +9,7 @@
 #define LALR_TABLE_H
 
 #include "LRTable.h"
+#include "VMap.h"
 #include <cereal/types/vector.hpp>
 
 class BNFParser;
@@ -37,7 +38,7 @@ public:
     int VSum;     // V的总数
     vector <int> bnf_size; // 每条bnf范式的长度
     vector <int> bnf_Vn; // 每条bnf范式的长度
-
+    VMap* vmap; // VMap映射表
 private:
     void BuildReduce();
     bool PdPriority();
@@ -50,7 +51,10 @@ private:
     template<class Archive>
     void serialize(Archive &ar)
     {
-        ar( constSum, stateSum, VSum, CEREAL_NVP(Goto), CEREAL_NVP(Action), CEREAL_NVP(bnf_size), CEREAL_NVP(bnf_Vn) ); // serialize things by passing them to the archive
+        // serialize things by passing them to the archive
+        ar( constSum, stateSum, VSum,
+            CEREAL_NVP(Goto), CEREAL_NVP(Action),
+            CEREAL_NVP(bnf_size), CEREAL_NVP(bnf_Vn), *vmap );
     }
 };
 

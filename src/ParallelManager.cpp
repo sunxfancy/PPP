@@ -32,7 +32,7 @@ void ParallelManager::split(int n) {
     for (int i = 0; i < n; ++i) {
         ParallelWorker* pm = new ParallelWorker(ptable, func);
         if (i == n-1)
-            pm->init(i*psize, size, tokens.data());
+            pm->init(i*psize, size-1, tokens.data());
         else
             pm->init(i*psize, (i+1)*psize, tokens.data());
         std::thread* t = new std::thread(thread_task, pm);
@@ -52,14 +52,24 @@ void ParallelManager::split(int n) {
     }
 }
 
-
+static
+Token* TokenFliter(VMap* vmap, Token* token) {
+    int id = vmap->getConst(token->pToken);
+    if (id != -1) {
+        token->type = id;
+    }
+    return token;
+}
 
 void ParallelManager::run_lex(const std::string& path) {
     fileReader(path);
     lex->setData(data.c_str());
-    for (auto* t = lex->Read(); t->type != 0; t = lex->Read()) {
-        tokens.push_back(*t);
+    auto* t = lex->Read();
+    for (; t->type != 0; t = lex->Read()) {
+        tokens.push_back(*TokenFliter(ptable->vmap, t));
     }
+    tokens.push_back(*TokenFliter(ptable->vmap, t));
+    printf("%s\n", "run lex finished");
 }
 
 void ParallelManager::fileReader(const std::string& path) {

@@ -4,4 +4,4 @@
 *.lrsave
 ./bin/
 build/
-
+.idea/

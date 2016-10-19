@@ -1,13 +1,11 @@
-const int a = 3;
+int a = 3;
 void test() {
-	const int pi = 3;
+	int pi = 3;
 	int a = 5;
 	a = a * pi;
-	write(a);
 }
 
 void main() {
 	test();
 	write(a * 2);
-	return 0;
 }

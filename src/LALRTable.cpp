@@ -11,6 +11,7 @@
 #include <iostream>
 
 LALRTable::LALRTable() {
+    vmap = new VMap();
 }
 
 
@@ -18,8 +19,8 @@ LALRTable::LALRTable(const LALRTable& other){
 
 }
 
-LALRTable::~LALRTable(){
-
+LALRTable::~LALRTable() {
+    delete vmap;
 }
 
 LALRTable& LALRTable::operator=(const LALRTable& other){
@@ -45,12 +46,17 @@ void LALRTable::BuildTable(vector<ItemCollection*> LALRItems){
 }
 
 char LALRTable::ACTION(int state, int id){
-	return 0;
+    if (state < 0 || state >= stateSum) return 0;
+    if (id < 0 || id >= constSum) return 0;
+    return Action[state][id];
 }
 
 int LALRTable::GOTO(int state, int id){
-	return 0;
+    if (state < 0 || state >= stateSum) return 0;
+    if (id < 0 || id >= VSum) return 0;
+    return Goto[state][id];
 }
+
 
 void LALRTable::printTable() {
     auto& fout = cerr;
