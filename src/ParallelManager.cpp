@@ -57,7 +57,7 @@ void ParallelManager::split(int n) {
 void ParallelManager::run_lex(const std::string& path) {
     fileReader(path);
     lex->setData(data.c_str());
-    for (auto* t = lex->Read(); t->type != -1; t = lex->Read()) {
+    for (auto* t = lex->Read(); t->type != 0; t = lex->Read()) {
         tokens.push_back(*t);
     }
 }

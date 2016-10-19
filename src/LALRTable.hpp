@@ -15,7 +15,6 @@ class BNFParser;
 
 class LALRTable : public LRTable
 {
-
 public:
     LALRTable();
     LALRTable(const LALRTable& other);
