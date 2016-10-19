@@ -50,43 +50,47 @@ void Automaton::run_from (int state) {
             finished = true;
         }
         s = LRStack.back();
+        if (s < 0) {
+            printf("LRCore error\n");
+            return;
+        }
         printf("Stack Top: %d\n",s);
         char c = table->ACTION(s, t->type);
         int sn = table->GOTO(s, t->type);
         printf("type: %d, action: %c, goto: %d\n", t->type, c, sn);
         switch (c) {
-        case 's': {
-            if (finished) {
-                pm->finish(this);
+            case 's': {
+                if (finished) {
+                    pm->finish(this);
+                    return;
+                }
+                Shift(sn, t);
+                t = reader();
+                break;
+            }
+            case 'r': {
+                Reduce(sn);
+                break;
+            }
+            case 'a':
+                printf("Accept!\n");
                 return;
-            }
-            Shift(sn, t);
-            t = reader();
-            break;
-        }
-        case 'r': {
-            int Vn = Reduce(sn);
-            break;
-        }
-        case 'a':
-            printf("Accept!\n");
-            return;
-        default:
-            string pointer = t->debug_line;
-            for (auto p = pointer.begin(); p != pointer.end(); ++p) {
-                if ((p-pointer.begin()) == t->col_num) { *p = '^'; continue; }
-                if (*p != ' ' && *p != '\t') { *p = '~'; continue; }
-            }
-            printf("%s\n", t->debug_line);
-            printf("%s\n", pointer.c_str());
-            printf("LRCore error\n");
-            printf("错误的Action动作：%c\n", c);
-            printf("目前的状态：%d\n", s);
-            printf("Token-Type: %d\n",t->type);
-            printf("Token: %s\n", t->pToken);
-            printf("line: %d, %d\n",t->row_num, t->col_num);
-            //TODO: 需要释放本层资源
-            return;
+            default:
+                string pointer = t->debug_line;
+                for (auto p = pointer.begin(); p != pointer.end(); ++p) {
+                    if ((p-pointer.begin()) == t->col_num) { *p = '^'; continue; }
+                    if (*p != ' ' && *p != '\t') { *p = '~'; continue; }
+                }
+                printf("%s\n", t->debug_line);
+                printf("%s\n", pointer.c_str());
+                printf("LRCore error\n");
+                printf("错误的Action动作：%c\n", c);
+                printf("目前的状态：%d\n", s);
+                printf("Token-Type: %d\n",t->type);
+                printf("Token: %s\n", t->pToken);
+                printf("line: %d, %d\n",t->row_num, t->col_num);
+                //TODO: 需要释放本层资源
+                return;
         }
     }
 
@@ -117,7 +121,7 @@ void Automaton::findStack(int len, int shift_size) {
             begin_stack.pop_front();
         }
 
-        // TODO: VMap need check, for Vn translat
+        // TODO: VMap need check, for Vn translate
         for ( int j = table->constSum; j <= table->VSum; ++j ) {
             int pre = table->GOTO(i, j);
             if (pre == LRStack.front()) {
@@ -133,6 +137,9 @@ void Automaton::findStack(int len, int shift_size) {
 }
 
 void Automaton::Shift(int x, const Token* t){
+    LRStack.push_back(x);
+    NodeStack.push_back((void*)(t->pToken));
+
     // for debug
     auto& fout = cout;
     fout << "Stack: ";
@@ -141,15 +148,13 @@ void Automaton::Shift(int x, const Token* t){
         fout << p << ' ';
     }
     fout << endl << "Shift: " << x << endl;
-    LRStack.push_back(x);
-    NodeStack.push_back((void*)(t->pToken));
+
 }
 
 
 
 int Automaton::Reduce(int x){
     int len = table->bnf_size[x];
-    cout << "pop:" << len << endl;
     if (len >= LRStack.size()) {
         max_stack = (int) (len - LRStack.size() + 1);
         findStack(1, 1);
@@ -164,8 +169,19 @@ int Automaton::Reduce(int x){
     void* ans = function(x, args);
     NodeStack.push_back(ans);
     int Vn = table->bnf_Vn[x];
-    LRStack.push_back(table->GOTO(LRStack.back(), Vn));
-    return table->bnf_Vn[x];
+    int s = LRStack.back();
+    LRStack.push_back(table->GOTO(s, Vn));
+
+    // for debug
+    auto& fout = cout;
+    fout << "Stack: ";
+    for (auto p: LRStack)
+    {
+        fout << p << ' ';
+    }
+    fout << endl << "Reduce: " << x << endl;
+
+    return Vn;
 }
 
 
