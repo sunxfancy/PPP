@@ -12,12 +12,9 @@ file(GLOB_RECURSE source_files ${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp)
 include_directories(Lex/include third-party/cereal-1.1.2)
 link_directories(${CMAKE_CURRENT_SOURCE_DIR}/ExIconv/extlib/lib)
 
-SET (CMAKE_CXX_COMPILER_ENV_VAR "clang++")
+
 SET (CMAKE_CXX_FLAGS "-std=c++11")
-SET (CMAKE_CXX_FLAGS_DEBUG "-g")
-SET (CMAKE_CXX_FLAGS_MINSIZEREL "-Os -DNDEBUG")
-SET (CMAKE_CXX_FLAGS_RELEASE "-O4 -DNDEBUG")
-SET (CMAKE_CXX_FLAGS_RELWITHDEBINFO "-O2 -g")
+
 SET (EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/bin)
 
 add_executable(ppp ${source_files})
