@@ -4,8 +4,8 @@ git:
 language: cpp
 
 compiler:
-  - gcc-4.8
-  - clang-3.6
+  - gcc
+  - clang
 
 matrix:
   include:
@@ -19,7 +19,6 @@ matrix:
 
 
 before_install:
-  - sudo apt-get -qq update
   - sudo sh ./scripts/install_gtest.sh
 
 script:
