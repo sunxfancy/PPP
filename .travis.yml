@@ -4,14 +4,8 @@ git:
 language: cpp
 
 compiler:
-  - gcc
-  - clang
-
-addons:
-  apt:
-    packages:
-      - gcc-4.8
-      - g++-4.8
+  - gcc-4.8
+  - clang-3.6
 
 matrix:
   include:
