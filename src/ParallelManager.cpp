@@ -3,6 +3,7 @@
 #include "Combine.hpp"
 #include <sstream>
 #include <iostream>
+#include <cstring>
 #include "LALRTable.hpp"
 
 using namespace std;
@@ -58,6 +59,15 @@ Token* TokenFliter(VMap* vmap, Token* token) {
     if (id != -1) {
         token->type = id;
     }
+    // copy debug line
+    if (token->debug_line != NULL) {
+        char* line = new char[strlen(token->debug_line)+1];
+        token->debug_line = strcpy(line, token->debug_line);
+    }
+    if (token->pToken != NULL) {
+        char* line = new char[strlen(token->pToken)+1];
+        token->pToken = strcpy(line, token->pToken);
+    }
     return token;
 }
 
@@ -66,6 +76,7 @@ void ParallelManager::run_lex(const std::string& path) {
     lex->setData(data.c_str());
     auto* t = lex->Read();
     for (; t->type != 0; t = lex->Read()) {
+        printf("%s\n", t->pToken);
         tokens.push_back(*TokenFliter(ptable->vmap, t));
     }
     tokens.push_back(*TokenFliter(ptable->vmap, t));

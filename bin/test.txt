@@ -1,11 +1,10 @@
 int a = 3;
-void test() {
+int test(int a) {
 	int pi = 3;
-	int a = 5;
-	a = a * pi;
+	return a * pi;
 }
 
 void main() {
-	test();
+	a = test(a);
 	write(a * 2);
 }
