@@ -13,7 +13,7 @@ include_directories(Lex/include third-party/cereal-1.1.2)
 link_directories(${CMAKE_CURRENT_SOURCE_DIR}/ExIconv/extlib/lib)
 
 
-SET (CMAKE_CXX_FLAGS "-std=c++11")
+SET (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 
 SET (EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/bin)
 
