@@ -25,6 +25,7 @@ matrix:
 
 
 before_install:
+  - sudo apt-get -qq update
   - sudo sh ./scripts/install_gtest.sh
 
 script:
