@@ -26,16 +26,21 @@ ParallelManager::ParallelManager(const char* l, size_t ls, const char* p, size_t
     ptable->Load(is);
 }
 
-void ParallelManager::split(int n) {
-    int size = data.size();
+ParallelWorker* ParallelManager::create_worker(int i, int n) {
+    int size = (int) tokens.size();
     int psize = size / n;
+    ParallelWorker* pm = new ParallelWorker(ptable, func);
+    if (i == n-1)
+        pm->init(i*psize, size-1, tokens);
+    else
+        pm->init(i*psize, (i+1)*psize, tokens);
+    return pm;
+}
+
+void ParallelManager::split(int n) {
     std::vector<ParallelWorker*> pws;
     for (int i = 0; i < n; ++i) {
-        ParallelWorker* pm = new ParallelWorker(ptable, func);
-        if (i == n-1)
-            pm->init(i*psize, size-1, tokens.data());
-        else
-            pm->init(i*psize, (i+1)*psize, tokens.data());
+        ParallelWorker* pm = create_worker(i, n);
         std::thread* t = new std::thread(thread_task, pm);
         pws.push_back(pm);
         threads.push_back(t);
@@ -80,7 +85,7 @@ void ParallelManager::run_lex(const std::string& path) {
         tokens.push_back(*TokenFliter(ptable->vmap, t));
     }
     tokens.push_back(*TokenFliter(ptable->vmap, t));
-    printf("%s\n", "run lex finished");
+    printf("\n%s\n", "run lex finished");
 }
 
 void ParallelManager::fileReader(const std::string& path) {

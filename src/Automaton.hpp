@@ -17,7 +17,7 @@ public:
     Automaton (const Automaton&);
     virtual ~Automaton ();
 
-    void init (LALRTable* ptable, AutoCallback func, const Token* data);
+    void init (LALRTable* ptable, AutoCallback func, const std::vector<Token>& data);
     void run ();
     void run_from (int state = -1);
 
@@ -31,16 +31,15 @@ public:
 private:
     const Token* reader();
     const Token* reader(int x);
-    const Token* tokens;
+    const std::vector<Token>* tokens;
     int max_stack;
 
     void Shift(int x, const Token* t);
 
-    // 三个参数分别是，要规约的语法项id，规约时的父节点
     int Reduce(int x);
+    int Reduce(int size, int Vn, int x);
 
     void findStack(int len, int shift_size);
-
     /* data */
     LALRTable* table;
     AutoCallback function;
@@ -50,6 +49,8 @@ private:
     std::deque<void*> NodeStack;
 
     ParallelWorker* pm;
+
+    int shift_size = 1;
 };
 
 

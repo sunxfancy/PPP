@@ -17,15 +17,15 @@ public:
         this->func = func;
     }
 
-    void init(int begin, int end, Token* data) {
+    void init(int begin, int end, std::vector<Token>& data) {
         this->begin = begin;
         this->end = end;
-        this->tokens = data;
+        this->tokens = &data;
     }
 
     void run() {
         Automaton ato(this);
-        ato.init(ptable, func, tokens);
+        ato.init(ptable, func, *tokens);
         ato.begin = ato.now = begin;
         ato.end = end;
         ato.run();
@@ -42,7 +42,7 @@ private:
     std::map< std::deque<int>, Automaton* > be_map;
     LALRTable* ptable;
     AutoCallback func;
-    Token* tokens;
+    std::vector<Token>* tokens;
     int begin, end;
 };
 
@@ -53,7 +53,7 @@ public:
     ParallelManager(const char* l, size_t ls, const char* p, size_t ps, AutoCallback func);
     void split(int n);
     void run_lex(const std::string& path);
-
+    ParallelWorker* create_worker(int begin, int end);
 private:
     LexInterface* lex;
     LALRTable* ptable;

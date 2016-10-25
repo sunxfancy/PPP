@@ -16,10 +16,10 @@ Automaton::~Automaton () {
 
 }
 
-void Automaton::init(LALRTable* ptable, AutoCallback func, const Token* data) {
+void Automaton::init(LALRTable* ptable, AutoCallback func, const std::vector<Token>& data) {
     table = ptable;
     function = func;
-    tokens = data;
+    tokens = &data;
 }
 
 void Automaton::run() {
@@ -27,10 +27,12 @@ void Automaton::run() {
         for (int i = 1; i < table->stateSum; i++) {  // i一定不能从0开始，否则就成为了第一个根BNF
             now = begin;
             LRStack.clear();
+            begin_stack.clear();
             run_from(i);
         }
     else {
         now = begin;
+        begin_stack.clear();
         LRStack.clear();
         run_from(0);
     }
@@ -40,22 +42,27 @@ void Automaton::run_from (int state) {
     bool finished = false;
     const Token* t = reader();
 
-    if (state != -1)
+    if (state != -1) {
         LRStack.push_back(state); // push the begin state
+        begin_stack.push_back(state);
+        if (table->ACTION(state, t->type) == 'r') return;// for the first action can not be Reduce
+    }
     int s;
     while (1) {
-        cout << "------------------------" << endl;
-        printf("Token: %s %d\n", t->pToken, t->type);
+
         if (now == end) {
             // found a segment signal
             finished = true;
         }
         s = LRStack.back();
-        if (s < 0) {
+        if (s < 0 || t== nullptr || t->type == -1) {
             printf("LRCore error\n");
             return;
         }
-        printf("Stack Top: %d\n",s);
+        cout << "------------------------" << endl;
+        printf("now: %d, begin: %d, end: %d\n", now, begin, end);
+        printf("Token: %s %d\n", t->pToken, t->type);
+         printf("Stack Top: %d\n",s);
         char c = table->ACTION(s, t->type);
         int sn = table->GOTO(s, t->type);
         printf("type: %d, action: %c, goto: %d\n", t->type, c, sn);
@@ -78,6 +85,7 @@ void Automaton::run_from (int state) {
                 if (Vn != -1) break;
             }
             default: {
+                /*
                 string pointer = t->debug_line;
                 for (auto p = pointer.begin(); p != pointer.end(); ++p) {
                     if ((p - pointer.begin()) == t->col_num) {
@@ -98,6 +106,7 @@ void Automaton::run_from (int state) {
                 printf("Token: %s\n", t->pToken);
                 printf("line: %d, %d\n", t->row_num, t->col_num);
                 //TODO: 需要释放本层资源
+                */
                 return;
             }
         }
@@ -111,7 +120,10 @@ void Automaton::findStack(int len, int shift_size) {
         // find the right way
         std::deque<int> backup(LRStack);
         int now_back = now;
+        int shift_size_back = this->shift_size;
+        this->shift_size = shift_size;
         run_from();
+        this->shift_size = shift_size_back;
         LRStack = backup;
         now = now_back;
         return;
@@ -123,24 +135,24 @@ void Automaton::findStack(int len, int shift_size) {
     for (int i=0; i<=table->stateSum; ++i ) {
         int pre = table->GOTO(i, c);
         if (pre == LRStack.front()) {
-            LRStack.push_front(pre);
-            begin_stack.push_front(pre);
+            LRStack.push_front(i);
+            begin_stack.push_front(i);
             findStack(len+1, shift_size+1);
             LRStack.pop_front();
             begin_stack.pop_front();
         }
 
         // TODO: VMap need check, for Vn translate
-        for ( int j = table->constSum; j <= table->VSum; ++j ) {
-            int pre = table->GOTO(i, j);
-            if (pre == LRStack.front()) {
-                LRStack.push_front(pre);
-                begin_stack.push_front(pre);
-                findStack(len+1, shift_size);
-                LRStack.pop_front();
-                begin_stack.pop_front();
-            }
-        }
+//        for ( int j = table->constSum; j <= table->VSum; ++j ) {
+//            int pre = table->GOTO(i, j);
+//            if (pre == LRStack.front()) {
+//                LRStack.push_front(pre);
+//                begin_stack.push_front(pre);
+//                findStack(len+1, shift_size);
+//                LRStack.pop_front();
+//                begin_stack.pop_front();
+//            }
+//        }
     }
 }
 
@@ -149,25 +161,18 @@ void Automaton::Shift(int x, const Token* t){
     NodeStack.push_back((void*)(t->pToken));
 
     // for debug
-    auto& fout = cout;
-    fout << "Stack: ";
-    for (auto p: LRStack)
-    {
-        fout << p << ' ';
-    }
-    fout << endl << "Shift: " << x << endl;
+    // auto& fout = cout;
+    // fout << "Stack: ";
+    // for (auto p: LRStack)
+    // {
+    //     fout << p << ' ';
+    // }
+    // fout << endl << "Shift: " << x << endl;
 }
 
-
-
-int Automaton::Reduce(int x){
-    int len = table->bnf_size[x];
-    if (len >= LRStack.size()) {
-        max_stack = (int) (len - LRStack.size() + 1);
-        findStack(1, 1);
-    }
+int Automaton::Reduce(int size, int Vn, int x) {
     std::vector<void*> args;
-    for (int i = 0; i < len; ++i) {
+    for (int i = 0; i < size; ++i) {
         LRStack.pop_back();
         args.push_back(NodeStack.back());
         NodeStack.pop_back();
@@ -175,20 +180,33 @@ int Automaton::Reduce(int x){
     args.reserve(sizeof(void*));
     void* ans = function(x, args);
     NodeStack.push_back(ans);
-    int Vn = table->bnf_Vn[x];
+
     int s = LRStack.back();
     LRStack.push_back(table->GOTO(s, Vn));
 
     // for debug
-    auto& fout = cout;
-    fout << "Stack: ";
-    for (auto p: LRStack)
-    {
-        fout << p << ' ';
-    }
-    fout << endl << "Reduce: " << x << endl;
+    // auto& fout = cout;
+    // fout << "Stack: ";
+    // for (auto p: LRStack)
+    // {
+    //     fout << p << ' ';
+    // }
+    // fout << endl << "Reduce: " << x << endl;
 
     return table->GOTO(s, Vn);
+}
+
+int Automaton::Reduce(int x){
+    int len = table->bnf_size[x];
+    if (len >= LRStack.size()) {
+        max_stack = (int) (len - LRStack.size() + 1);
+        now--;
+        findStack(0, shift_size);
+        return -1;
+    }
+    int Vn = table->bnf_Vn[x];
+
+    return Reduce(len, Vn, x);
 }
 
 
@@ -198,7 +216,8 @@ const Token* Automaton::reader() {
 
 
 const Token* Automaton::reader(int x) {
-    if (x >= 0 && x <= end)
-        return &tokens[x];
-    return 0;
+    int size = (int) tokens->size();
+    if (x >= 0 && x <= end && x <size)
+        return tokens->data()+x;
+    return nullptr;
 }

@@ -8,3 +8,14 @@ void main() {
 	a = test(a);
 	write(a * 2);
 }
+
+int a = 3;
+int test(int a) {
+	int pi = 3;
+	return a * pi;
+}
+
+void main() {
+	a = test(a);
+	write(a * 2);
+}
