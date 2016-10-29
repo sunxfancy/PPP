@@ -49,8 +49,11 @@ public:
         pm->run_lex(path);
     }
 
-    void run_threads() {
-        pm->split(threads);
+    void run_threads(int t = -1) {
+        if (t == -1)
+            pm->split(threads);
+        else
+            pm->split(t);
     }
 
     typedef const char* (*getLexTable_t)();

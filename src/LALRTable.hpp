@@ -38,6 +38,10 @@ public:
     int VSum;     // V的总数
     vector <int> bnf_size; // 每条bnf范式的长度
     vector <int> bnf_Vn; // 每条bnf范式的长度
+
+    vector < vector<int> > bnfs;
+    vector < vector<int> > bnf_from;
+
     VMap* vmap; // VMap映射表
 private:
     void BuildReduce();
@@ -54,7 +58,8 @@ private:
         // serialize things by passing them to the archive
         ar( constSum, stateSum, VSum,
             CEREAL_NVP(Goto), CEREAL_NVP(Action),
-            CEREAL_NVP(bnf_size), CEREAL_NVP(bnf_Vn), *vmap );
+            CEREAL_NVP(bnf_size), CEREAL_NVP(bnf_Vn),
+            CEREAL_NVP(bnfs), CEREAL_NVP(bnf_from), *vmap ); // serialize things by passing them to the archive
     }
 };
 

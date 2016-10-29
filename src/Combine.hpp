@@ -13,7 +13,7 @@ public:
         
     }
 
-    void combineOutput(ParallelWorker* pw);
+    bool combineOutput(ParallelWorker* pw);
     
 private:
     ParallelWorker* first;

@@ -2,6 +2,7 @@
 
 #include "Automaton.hpp"
 #include "SharedStack.hpp"
+#include "LALRTable.hpp"
 #include <map>
 #include <vector>
 #include <fstream>
@@ -36,10 +37,40 @@ public:
         be_map[ato->begin_stack] = new_ato;
     }
 
+    void printAll() {
+        printf("\n");
+        for (auto p : be_map) {
+            printStack(p.first);
+            printf("-> ");
+            printStack(p.second->getLRStack());
+            printf("\n");
+
+            printSymbol(p.second->begin_symbol);
+            printf("-> ");
+            printSymbol(p.second->SymbolStack);
+            printf("\n");
+        }
+    }
+
+    void printStack(const std::deque<int>& stack) {
+        for (auto k : stack)
+            printf("%d ", k);
+    }
+
+    void printSymbol(const std::deque<int>& stack) {
+        for (auto k : stack) {
+            if (k == 0) printf("$ ");
+            else printf("%s ", ptable->vmap->find(k).c_str());
+        }
+    }
+
+    long time;
     std::map< std::deque<int>, Automaton* >& getBeginEndMap() { return be_map; }
 private:
     // 并行支持
     std::map< std::deque<int>, Automaton* > be_map;
+
+
     LALRTable* ptable;
     AutoCallback func;
     std::vector<Token>* tokens;
@@ -61,7 +92,8 @@ private:
     std::vector<Token> tokens;
     std::vector<std::thread*> threads;
     AutoCallback func;
-
-    void combine(std::vector<ParallelWorker*>& pws);
+    long time_avg, time_fc;
+    bool combine(std::vector<ParallelWorker*>& pws);
     void fileReader(const std::string& path);
+    void countTime(std::vector<ParallelWorker*>& pws);
 };

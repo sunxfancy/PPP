@@ -25,32 +25,32 @@ public:
     // begin stack for the map
     std::deque<int> begin_stack;
 
+    std::deque<int> SymbolStack;
+    std::deque<int> begin_symbol;
+
     int begin;
     int now;
     int end;
 private:
     const Token* reader();
     const Token* reader(int x);
+
     const std::vector<Token>* tokens;
-    int max_stack;
 
     void Shift(int x, const Token* t);
-
     int Reduce(int x);
-    int Reduce(int size, int Vn, int x);
 
-    void findStack(int len, int shift_size);
+    int Reduce(int size, int Vn, int x);
+    void findStack(int x, int Vn);
     /* data */
     LALRTable* table;
-    AutoCallback function;
 
+    AutoCallback function;
     // 分析栈
     std::deque<int> LRStack;
-    std::deque<void*> NodeStack;
+//    std::deque<void*> NodeStack;
 
     ParallelWorker* pm;
-
-    int shift_size = 1;
 };
 
 
