@@ -1,3 +1,14 @@
+/**
+* @Author: Sun Xiaofan <sxf>
+* @Date:   2016-10-29
+* @Email:  sunxfancy@gmail.com
+* @Last modified by:   sxf
+* @Last modified time: 2016-11-17
+* @License: MIT License
+*/
+
+
+
 #pragma once
 
 #include "Automaton.hpp"
@@ -34,13 +45,14 @@ public:
 
     void finish(Automaton* ato) {
         Automaton* new_ato = new Automaton(*ato);
-        be_map[ato->begin_stack] = new_ato;
+        be_map[deque<int>(ato->begin_stack.rbegin(),
+                     ato->begin_stack.rend())] = new_ato;
     }
 
     void printAll() {
         printf("\n");
         for (auto p : be_map) {
-            printStack(p.first);
+            printStack(p.second->begin_stack);
             printf("-> ");
             printStack(p.second->getLRStack());
             printf("\n");

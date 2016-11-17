@@ -1,3 +1,14 @@
+/**
+* @Author: Sun Xiaofan <sxf>
+* @Date:   2016-10-29
+* @Email:  sunxfancy@gmail.com
+* @Last modified by:   sxf
+* @Last modified time: 2016-11-17
+* @License: MIT License
+*/
+
+
+
 #include "Automaton.hpp"
 #include "LALRTable.hpp"
 #include "ParallelManager.hpp"
@@ -48,23 +59,23 @@ void Automaton::run() {
 
 void Automaton::run_from (int state) {
     bool finished = false;
-    bool has_shift = false;
     const Token* t = reader();
 
     if (state != -1) {
         // first begin
         LRStack.push_back(state); // push the begin state
-        begin_stack.push_back(state);
         SymbolStack.push_back(0);
-        begin_symbol.push_back(0);
+        begin_stack.push_front(state);
+        begin_symbol.push_front(0);
+
+        if (table->ACTION(state, t->type) == 'r'
+            && table->bnf_size[table->GOTO(state, t->type)] >= LRStack.size()
+                ) return;// for the first action can not be Reduce
     }
     int s = LRStack.back();
-    if (table->ACTION(s, t->type) == 'r'
-        && table->bnf_size[table->GOTO(s, t->type)] >= LRStack.size()
-            ) return;// for the first action can not be Reduce
 
     while (1) {
-        if (now == end) {
+        if (now > end) {
             // found a segment signal
             finished = true;
         }
@@ -75,16 +86,16 @@ void Automaton::run_from (int state) {
         }
         char c = table->ACTION(s, t->type);
         int sn = table->GOTO(s, t->type);
-//        if (begin != 0) {
-//            cout << "------------------------" << endl;
-//            printf("now: %d, begin: %d, end: %d\n", now, begin, end);
-//            printf("Token: %s %d\n", t->pToken, t->type);
-//            printf("Stack Top: %d\n", s);
-//            printf("type: %d, action: %c, goto: %d\n", t->type, c, sn);
-//        }
+        // if (begin != 0) {
+            // cout << "------------------------" << endl;
+            // printf("now: %d, begin: %d, end: %d\n", now, begin, end);
+            // printf("Token: %s %d\n", t->pToken, t->type);
+            // printf("Stack Top: %d\n", s);
+            // printf("type: %d, action: %c, goto: %d\n", t->type, c, sn);
+        // }
         switch (c) {
             case 'a': {
-                printf("Accept!\n");
+                // printf("Accept!\n");
                 pm->finish(this);
                 return;
             }
@@ -95,11 +106,9 @@ void Automaton::run_from (int state) {
                 }
                 Shift(sn, t);
                 t = reader();
-                has_shift = true;
                 break;
             }
             case 'r': {
-                if (!has_shift && table->bnf_size[sn] >= LRStack.size()) return;
                 int Vn = Reduce(sn);
                 if (Vn != -1) break;
             }

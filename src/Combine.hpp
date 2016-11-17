@@ -1,3 +1,14 @@
+/**
+* @Author: Sun Xiaofan <sxf>
+* @Date:   2016-10-26
+* @Email:  sunxfancy@gmail.com
+* @Last modified by:   sxf
+* @Last modified time: 2016-11-17
+* @License: MIT License
+*/
+
+
+
 #pragma once
 #include "SharedStack.hpp"
 
@@ -6,16 +17,13 @@ class ParallelWorker;
 
 class Combine {
 public:
-    Combine(ParallelWorker* pw) {
-        first = pw;
-    }
+    Combine(ParallelWorker* pw);
     ~Combine() {
-        
+
     }
 
     bool combineOutput(ParallelWorker* pw);
-    
+    const Automaton* getOutput() { return first; }
 private:
-    ParallelWorker* first;
-
+    const Automaton* first;
 };

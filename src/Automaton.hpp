@@ -1,3 +1,14 @@
+/**
+* @Author: Sun Xiaofan <sxf>
+* @Date:   2016-10-29
+* @Email:  sunxfancy@gmail.com
+* @Last modified by:   sxf
+* @Last modified time: 2016-11-17
+* @License: MIT License
+*/
+
+
+
 #ifndef AUTOMATON_HPP
 #define AUTOMATON_HPP
 
@@ -21,7 +32,7 @@ public:
     void run ();
     void run_from (int state = -1);
 
-    std::deque<int>& getLRStack() { return LRStack; }
+    const std::deque<int>& getLRStack() const { return LRStack; }
     // begin stack for the map
     std::deque<int> begin_stack;
 
