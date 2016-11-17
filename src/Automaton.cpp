@@ -58,7 +58,6 @@ void Automaton::run() {
 }
 
 void Automaton::run_from (int state) {
-    bool finished = false;
     const Token* t = reader();
 
     if (state != -1) {
@@ -75,10 +74,6 @@ void Automaton::run_from (int state) {
     int s = LRStack.back();
 
     while (1) {
-        if (now > end) {
-            // found a segment signal
-            finished = true;
-        }
         s = LRStack.back();
         if (s < 0 || t== nullptr || t->type == -1) {
             printf("LRCore error\n");
@@ -94,13 +89,13 @@ void Automaton::run_from (int state) {
             // printf("type: %d, action: %c, goto: %d\n", t->type, c, sn);
         // }
         switch (c) {
-            case 'a': {
+            case 'a': { // exit
                 // printf("Accept!\n");
                 pm->finish(this);
                 return;
             }
             case 's': {
-                if (finished) {
+                if (now > end) { // exit， > is right for the read(now++)
                     pm->finish(this);
                     return;
                 }

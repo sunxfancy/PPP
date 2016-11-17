@@ -26,4 +26,5 @@ public:
     const Automaton* getOutput() { return first; }
 private:
     const Automaton* first;
+    std::deque<int> stack;
 };

@@ -5,3 +5,5 @@
 ./bin/
 build/
 .idea/
+*.gch
+.clang_complete

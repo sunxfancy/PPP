@@ -1,8 +1,8 @@
 /*
 * @Author: sxf
 * @Date:   2016-10-24 12:02:18
-* @Last Modified by:   sxf
-* @Last Modified time: 2016-10-24 12:02:18
+* @Last modified by:   sxf
+* @Last modified time: 2016-11-17
 */
 
 #ifdef __APPLE__
@@ -26,10 +26,29 @@ AUTOMATON_TEST (Construction)
     EXPECT_NE(pw, nullptr);
 }
 
+AUTOMATON_TEST (Combine)
+{
+    App app("t100.txt", "libparser.so", 2);
+    app.loadLibrary();
+    app.run_lex();
+
+    ParallelWorker* pw = app.pm->create_worker(0, 2);
+    pw->run();
+    pw->printAll();
+
+    ParallelWorker* pw2 = app.pm->create_worker(1, 2);
+    pw2->run();
+    pw2->printAll();
+
+    Combine comb(*pw);
+    comb.
+}
+
+
 
 AUTOMATON_TEST (Running)
 {
-    App app("test.txt", "libparser.so", 0);
+    App app("test.txt", "libparser.so", 3);
     app.loadLibrary();
     app.run_lex();
 
@@ -55,7 +74,7 @@ AUTOMATON_TEST (SpeedTest)
 {
     timespec time, time1, time2;
     clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &time1);
-    App app("test2.txt", "libparser.so", 1);
+    App app("test.txt", "libparser.so", 1);
     clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &time2);
     time = diff(time1, time2);
     printf("\nInit time: %li:%li ns\n", time.tv_sec, time.tv_nsec);

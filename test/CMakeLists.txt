@@ -12,8 +12,8 @@ target_link_libraries(automaton_test pp lex exiconv iconv charsetdetect charset 
 add_test(AutomatonTest automaton_test)
 
 add_custom_target( runtest ALL
-        DEPENDS estring_test)
+        DEPENDS automaton_test)
 
 add_custom_command(TARGET runtest
         POST_BUILD
-        COMMAND estring_test)
+        COMMAND automaton_test)

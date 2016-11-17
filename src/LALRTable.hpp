@@ -1,16 +1,16 @@
 /*
 * @Author: 笑凡
 * @Date:   2014-12-31 09:31:22
-* @Last Modified by:   sxf
-* @Last Modified time: 2015-12-11 19:30:36
+* @Last modified by:   sxf
+* @Last modified time: 2016-11-17
 */
 
 #ifndef LALR_TABLE_H
 #define LALR_TABLE_H
 
-#include "LRTable.h"
-#include "VMap.h"
-#include <cereal/types/vector.hpp>
+#include "LRTable.hpp"
+#include "VMap.hpp"
+#include "cereal/types/vector.hpp"
 
 class BNFParser;
 

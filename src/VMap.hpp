@@ -1,11 +1,22 @@
+/**
+* @Author: Sun Xiaofan <sxf>
+* @Date:   2016-10-19
+* @Email:  sunxfancy@gmail.com
+* @Last modified by:   sxf
+* @Last modified time: 2016-11-17
+* @License: MIT License
+*/
+
+
+
 #ifndef VMAP_H
 #define VMAP_H
 
 #include <map>
 #include <string>
 #include <iostream>
-#include <cereal/types/map.hpp>
-#include <cereal/types/string.hpp>
+#include "cereal/types/map.hpp"
+#include "cereal/types/string.hpp"
 
 using namespace std;
 

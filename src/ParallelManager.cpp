@@ -1,3 +1,14 @@
+/**
+* @Author: Sun Xiaofan <sxf>
+* @Date:   2016-10-27
+* @Email:  sunxfancy@gmail.com
+* @Last modified by:   sxf
+* @Last modified time: 2016-11-17
+* @License: MIT License
+*/
+
+
+
 #include "ParallelManager.hpp"
 #include <thread>
 #include "Combine.hpp"
