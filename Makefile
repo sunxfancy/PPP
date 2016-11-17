@@ -11,11 +11,15 @@ build:
 	-mkdir build
 	-cd build && cmake .. && make ppp
 
+all:
+	-mkdir build
+	-cd build && cmake .. && make
+
 run:
 	-cd bin && ./ppp test.txt libparser.so 2
 
 run100:
-	-cd bin && ./ppp t100.txt libparser.so 3
+	-cd bin && ./ppp t100.txt libparser.so 5
 
 run1000:
 	-cd bin && ./ppp t1000.txt libparser.so 100
@@ -24,6 +28,8 @@ run10000:
 	-cd bin && ./ppp t10000.txt libparser.so 2
 
 test:
+	-mkdir build
+	-cd build && cmake .. && make automaton_test
 	-cd bin && ./automaton_test
 
 gdb:

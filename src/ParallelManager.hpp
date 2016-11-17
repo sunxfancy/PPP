@@ -50,6 +50,7 @@ public:
     }
 
     void printAll() {
+        printInput();
         printf("\n");
         for (auto p : be_map) {
             printStack(p.second->begin_stack);
@@ -61,6 +62,13 @@ public:
             printf("-> ");
             printSymbol(p.second->SymbolStack);
             printf("\n");
+        }
+    }
+
+    void printInput() {
+        printf("%s\n", "Input fragment:");
+        for (size_t i = begin; i <= end; i++) {
+            printf("%s ", tokens->at(i).pToken);
         }
     }
 

@@ -23,7 +23,7 @@ public:
     }
 
     bool combineOutput(ParallelWorker* pw);
-    const Automaton* getOutput() { return first; }
+    const std::deque<int>& getOutput() const { return stack; }
 private:
     const Automaton* first;
     std::deque<int> stack;

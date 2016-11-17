@@ -11,6 +11,7 @@
 
 #include <gtest/gtest.h>
 #include "App.hpp"
+#include "Combine.hpp"
 
 using namespace std;
 
@@ -40,11 +41,29 @@ AUTOMATON_TEST (Combine)
     pw2->run();
     pw2->printAll();
 
-    Combine comb(*pw);
-    comb.
+    Combine comb(pw);
+    bool t = comb.combineOutput(pw2);
+    EXPECT_EQ(t, true);
+    const auto& stack = comb.getOutput();
+    EXPECT_EQ(stack.size(), 2);
+    EXPECT_EQ(stack[1], 3);
 }
 
+AUTOMATON_TEST (Split)
+{
+    App app("t100.txt", "libparser.so", 5);
+    app.loadLibrary();
+    app.run_lex();
 
+    ParallelWorker* pw = app.pm->create_worker(0, 5);
+    pw->run();
+    pw->printAll();
+
+    ParallelWorker* pw2 = app.pm->create_worker(1, 5);
+    pw2->run();
+    pw2->printAll();
+    EXPECT_NE(pw2->getBeginEndMap().size(), 0);
+}
 
 AUTOMATON_TEST (Running)
 {
@@ -92,7 +111,7 @@ AUTOMATON_TEST (SpeedTest)
     printf("\nRun Lex time: %li:%li ns\n", time.tv_sec, time.tv_nsec);
 
 
-    for (int k = 1; k <= 16; k++) {
+    for (int k = 1; k <= 4; k++) {
         clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &time1);
 //        for (int i = 0; i < 100; ++i)
             app.run_threads(k);
