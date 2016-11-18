@@ -3,7 +3,7 @@
 * @Date:   2016-10-29
 * @Email:  sunxfancy@gmail.com
 * @Last modified by:   sxf
-* @Last modified time: 2016-11-17
+* @Last modified time: 2016-11-18
 * @License: MIT License
 */
 
@@ -59,19 +59,18 @@ void Automaton::run() {
 
 void Automaton::run_from (int state) {
     const Token* t = reader();
-
     if (state != -1) {
+        if (table->ACTION(state, t->type) == 'r'
+            && table->bnf_size[table->GOTO(state, t->type)] >= LRStack.size()
+                ) return;// for the first action can not be Reduce
+
         // first begin
         LRStack.push_back(state); // push the begin state
         SymbolStack.push_back(0);
         begin_stack.push_front(state);
         begin_symbol.push_front(0);
-
-        if (table->ACTION(state, t->type) == 'r'
-            && table->bnf_size[table->GOTO(state, t->type)] >= LRStack.size()
-                ) return;// for the first action can not be Reduce
     }
-    int s = LRStack.back();
+    int s;
 
     while (1) {
         s = LRStack.back();
@@ -82,11 +81,11 @@ void Automaton::run_from (int state) {
         char c = table->ACTION(s, t->type);
         int sn = table->GOTO(s, t->type);
         // if (begin != 0) {
-            // cout << "------------------------" << endl;
-            // printf("now: %d, begin: %d, end: %d\n", now, begin, end);
-            // printf("Token: %s %d\n", t->pToken, t->type);
-            // printf("Stack Top: %d\n", s);
-            // printf("type: %d, action: %c, goto: %d\n", t->type, c, sn);
+             cout << "------------------------" << endl;
+             printf("now: %d, begin: %d, end: %d\n", now, begin, end);
+             printf("Token: %s %d\n", t->pToken, t->type);
+             printf("Stack Top: %d\n", s);
+             printf("type: %d, action: %c, goto: %d\n", t->type, c, sn);
         // }
         switch (c) {
             case 'a': { // exit
@@ -147,6 +146,8 @@ void Automaton::findStack(int x, int Vn) {
     int now_back = this->now;
     int next;
 
+    printf("Begin Search Stack!\n");
+
     auto& bnf_from = table->bnf_from[x];
     auto& bnf = table->bnfs[x];
     vector<int> data;
@@ -154,6 +155,7 @@ void Automaton::findStack(int x, int Vn) {
     for (int begin_state : bnf_from) {
         int s = begin_state;
         int i;
+        data.clear(); symbol.clear(); // clear is important!!
         data.push_back(s);
         symbol.push_back(0);
         for (i = 0; i < bnf.size(); ++i) {
@@ -162,7 +164,14 @@ void Automaton::findStack(int x, int Vn) {
             data.push_back(s);
             symbol.push_back(bnf[i]);
         }
-        if (s != begin_stack.front()) goto RESTORE; // 必须要转移到当前状态
+        if (s != begin_stack.front()) {
+            printf("Warring! It shouldn't jump\n");
+            for (int j : data) {
+                printf("%d ", j);
+            }
+            printf("\n");
+            goto RESTORE; // 必须要转移到当前状态
+        }
 
         begin_symbol.front() = bnf[i];
         while (!data.empty()) {
@@ -183,6 +192,13 @@ void Automaton::findStack(int x, int Vn) {
 
         // run
         now--;
+
+        // check the begin stack
+        printf("Stack empty~\n");
+        for (int j : begin_stack) {
+            printf("%d ", j);
+        }
+        printf("\n");
         run_from();
 
 RESTORE:// restore

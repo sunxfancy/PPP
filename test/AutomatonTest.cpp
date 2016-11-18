@@ -2,7 +2,7 @@
 * @Author: sxf
 * @Date:   2016-10-24 12:02:18
 * @Last modified by:   sxf
-* @Last modified time: 2016-11-17
+* @Last modified time: 2016-11-18
 */
 
 #ifdef __APPLE__
@@ -86,6 +86,16 @@ AUTOMATON_TEST (Running)
 }
 
 
+AUTOMATON_TEST (Run5)
+{
+    App app("t100.txt", "libparser.so", 5);
+    app.loadLibrary();
+    app.run_lex();
+
+    ParallelWorker* pw2 = app.pm->create_worker(1, 3);
+    pw2->run();
+    pw2->printAll();
+}
 
 
 
