@@ -19,7 +19,7 @@
 #include <fstream>
 #include <strstream>
 #include <string>
-
+#include <thread>
 #include <functional>
 
 class ParallelWorker {
@@ -98,7 +98,6 @@ private:
 };
 
 
-namespace std { class thread; }
 class ParallelManager {
 public:
     ParallelManager(const char* l, size_t ls, const char* p, size_t ps, AutoCallback func);
