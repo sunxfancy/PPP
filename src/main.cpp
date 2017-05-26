@@ -20,27 +20,23 @@ void HexOutput(const char* buf, size_t size)
 
 int main(int argc, char const *argv[]) {
     std::string path;
-    std::string lib;
+    std::string lexer, parser;
     int threads;
 
-    if (argc <= 1 || argc > 4) {
+    if (argc <= 1 || argc > 5) {
         fprintf (stderr, "%s\n", help_msg);
         return 0;
     }
     path = argv[1];
-    if (argc == 2) {
-        lib = "libparser.so";
-    } else {
-        lib = argv[2];
-    }
-
-    if (argc == 4)
-        threads = atoi(argv[3]);
+    lexer = argv[2];
+    parser = argv[3];
+    if (argc == 5)
+        threads = atoi(argv[4]);
     else
         threads = 8;
 
-    App app(path, lib, threads);
-    app.loadLibrary();
+    App app(path, lexer, parser, threads);
+    app.LoadFile();
     app.run();
 
     return 0;

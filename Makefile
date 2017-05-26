@@ -9,7 +9,7 @@
 
 build:
 	-mkdir build
-	-cd build && cmake .. && make ppp
+	-cd build && conan install .. --build=missing && cmake .. && make ppp
 
 all:
 	-mkdir build
@@ -26,6 +26,9 @@ run1000:
 
 run10000:
 	-cd bin && ./ppp t10000.txt libparser.so 2
+
+run-json:
+	-cd build/bin && gdb ./ppp MOCK_DATA.json ./libparser.so 2
 
 test:
 	-mkdir build

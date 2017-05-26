@@ -19,6 +19,6 @@ SET (EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/bin)
 add_library(pp ${source_files})
 
 add_executable(ppp src/main.cpp)
-target_link_libraries(ppp pp lex ${CONAN_LIBS})
+target_link_libraries(ppp pp lex dl ${CONAN_LIBS})
 
 add_subdirectory(test)

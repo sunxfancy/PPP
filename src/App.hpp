@@ -6,19 +6,24 @@
 
 #include <string>
 #include "Automaton.hpp"
-#include <dlfcn.h>
+//#include <dlfcn.h>
 #include "ParallelManager.hpp"
 
 class App {
 public:
-    App(const std::string& path, const std::string& lib, int threads) {
-        this->path = path; this->lib = lib; this->threads = threads;
+    App(const std::string& path, const std::string& lexer, const std::string& parser, int threads) {
+        this->path = path; this->lexer = lexer; this->parser = parser; this->threads = threads;
     }
     ~App() {
         if (pm != nullptr) delete pm;
-        if (handle != nullptr) dlclose(handle);
+//        if (handle != nullptr) dlclose(handle);
     }
 
+
+    void LoadFile() {
+        
+    }
+    /*
     void loadLibrary() {
         handle = dlopen (lib.c_str(), RTLD_LAZY);
         char *error;
@@ -26,7 +31,7 @@ public:
             fprintf (stderr, "%s\n", dlerror());
             exit(1);
         }
-        dlerror();    /* Clear any existing error */
+        dlerror();    // Clear any existing error
         getLexTable = (getLexTable_t)dlsym(handle, "__getLexTable");
         getLexTableSize = (getLexTableSize_t)dlsym(handle, "__getLexTableSize");
         getLALRTable = (getLALRTable_t)dlsym(handle, "__getLALRTable");
@@ -39,6 +44,7 @@ public:
         if (pm != nullptr) delete pm;
         pm = new ParallelManager(getLexTable(), getLexTableSize(), getLALRTable(), getLALRTableSize(), getAction);
     }
+    */
 
     void run() {
         run_lex();
@@ -56,23 +62,25 @@ public:
             pm->split(t);
     }
 
-    typedef const char* (*getLexTable_t)();
-    typedef const char* (*getLALRTable_t)();
-    typedef size_t (*getLexTableSize_t)();
-    typedef size_t (*getLALRTableSize_t)();
+
 
     ParallelManager* pm = nullptr;
 private:
     std::string path;
-    std::string lib;
+    std::string lexer, parser;
+
     int threads;
 
-    void *handle;
-    getLexTable_t getLexTable;
-    getLALRTable_t getLALRTable;
-    getLexTableSize_t getLexTableSize;
-    getLALRTableSize_t getLALRTableSize;
-    AutoCallback getAction;
+//    void *handle;
+//    typedef const char* (*getLexTable_t)();
+//    typedef const char* (*getLALRTable_t)();
+//    typedef size_t (*getLexTableSize_t)();
+//    typedef size_t (*getLALRTableSize_t)();
+//    getLexTable_t getLexTable;
+//    getLALRTable_t getLALRTable;
+//    getLexTableSize_t getLexTableSize;
+//    getLALRTableSize_t getLALRTableSize;
+//    AutoCallback getAction;
 };
 
 
