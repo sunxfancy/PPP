@@ -8,6 +8,11 @@
 #include "Automaton.hpp"
 //#include <dlfcn.h>
 #include "ParallelManager.hpp"
+#include <string>
+#include <fstream>
+#include <streambuf>
+
+void* getAction(int bnf_num, const std::vector<void*>& args);
 
 class App {
 public:
@@ -21,7 +26,11 @@ public:
 
 
     void LoadFile() {
-        
+        if (pm != nullptr) delete pm;
+        string lexer_data, parser_data;
+        readWholeFile(lexer, lexer_data);
+        readWholeFile(parser, parser_data);
+        pm = new ParallelManager(lexer_data.c_str(), lexer_data.size(), parser_data.c_str(), parser_data.size(), getAction);
     }
     /*
     void loadLibrary() {
@@ -62,7 +71,17 @@ public:
             pm->split(t);
     }
 
+    void readWholeFile(const string& path, string& str) {
 
+        std::ifstream t(path);
+
+        t.seekg(0, std::ios::end);
+        str.reserve(t.tellg());
+        t.seekg(0, std::ios::beg);
+
+        str.assign((std::istreambuf_iterator<char>(t)),
+                   std::istreambuf_iterator<char>());
+    }
 
     ParallelManager* pm = nullptr;
 private:

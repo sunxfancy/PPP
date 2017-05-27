@@ -17,3 +17,8 @@ timespec diff(timespec start, timespec end)
     }
     return temp;
 }
+
+void* getAction(int bnf_num, const std::vector<void*>& args)
+{
+    return nullptr;
+}
