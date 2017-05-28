@@ -330,7 +330,7 @@ void DFA::print_func(){
 
 int DFA::nextState(int s, echar_t a)
 {
-	if (s == -1) return -1;
+	if (s == -1 || a == -1) return -1;
     if ((m_base[s] + a >= 0) && (m_base[s] + a < Top) && (m_check[m_base[s] + a] == s))
 		return m_next[m_base[s] + a];
 	else

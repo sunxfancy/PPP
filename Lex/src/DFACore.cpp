@@ -26,14 +26,16 @@ Token* DFACore::Read() {
 
     if (t != NULL) delete t;
     t = new Token();
-    echar_t nowdata, lastdata;
+    echar_t nowdata, lastdata, c;
 	lastdata = 0;
-    while (point < data.length()) {
-        nowdata = data[point];
-
+    while (point <= data.length()) {
+        if (point != data.length()) {
+            nowdata = data[point];
+            c = pEClass->getClass(nowdata);
+        } else
+            c = -1;
 
         // for each word ,may get it Equal Class
-        echar_t c = pEClass->getClass(nowdata);
 
         // test the next state
         int nextstate = dfa->nextState(state, c);
