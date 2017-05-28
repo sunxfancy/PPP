@@ -11,7 +11,9 @@
 
 #include "Automaton.hpp"
 #include "LALRTable.hpp"
+#include "VMap.hpp"
 #include "ParallelManager.hpp"
+
 Automaton::Automaton (ParallelWorker* pm) {
     this->pm = pm;
 }
@@ -35,6 +37,7 @@ void Automaton::init(LALRTable* ptable, AutoCallback func, const std::vector<Tok
     table = ptable;
     function = func;
     tokens = &data;
+    vmap = ptable->vmap;
 }
 
 void Automaton::run() {
@@ -60,9 +63,9 @@ void Automaton::run() {
 void Automaton::run_from (int state) {
     const Token* t = reader();
     if (state != -1) {
-        if (table->ACTION(state, t->type) == 'r'
-            && table->bnf_size[table->GOTO(state, t->type)] >= LRStack.size()
-                ) return;// for the first action can not be Reduce
+//        if (table->ACTION(state, t->type) == 'r'
+//            && table->bnf_size[table->GOTO(state, t->type)] >= LRStack.size()
+//                ) return;// for the first action can not be Reduce
 
         // first begin
         LRStack.push_back(state); // push the begin state
@@ -80,13 +83,14 @@ void Automaton::run_from (int state) {
         }
         char c = table->ACTION(s, t->type);
         int sn = table->GOTO(s, t->type);
-        // if (begin != 0) {
-             cout << "------------------------" << endl;
-             printf("now: %d, begin: %d, end: %d\n", now, begin, end);
-             printf("Token: %s %d\n", t->pToken, t->type);
-             printf("Stack Top: %d\n", s);
-             printf("type: %d, action: %c, goto: %d\n", t->type, c, sn);
-        // }
+        if (begin != 0) {
+            cout << "------------------------" << endl;
+            printf("now: %d, begin: %d, end: %d\n", now, begin, end);
+            printf("Token: %s %d\n", t->pToken, t->type);
+            printf("Stack Top: %d\n", s);
+            print_all_stack();
+            printf("type: %d, action: %c, goto: %d\n", t->type, c, sn);
+        }
         switch (c) {
             case 'a': { // exit
                 // printf("Accept!\n");
@@ -133,8 +137,6 @@ void Automaton::run_from (int state) {
             }
         }
     }
-
-
 }
 
 void Automaton::findStack(int x, int Vn) {
@@ -199,6 +201,15 @@ void Automaton::findStack(int x, int Vn) {
             printf("%d ", j);
         }
         printf("\n");
+        for (int s: begin_symbol) {
+            string str;
+            if (s != 0) str = vmap->find(s);
+            else str = "$";
+            printf("%s ", str.c_str());
+        }
+
+        printf("\n");
+
         run_from();
 
 RESTORE:// restore
@@ -274,4 +285,35 @@ const Token* Automaton::reader(int x) {
     if (x >= 0 && x <= end)
         return tokens->data()+x;
     return nullptr;
+}
+
+
+void Automaton::print_all_token(const vector<Token> *pVector, int left, int right) {
+    for (int i = begin; i < end; i++) {
+        auto& t = pVector->at(i);
+        if (t.type == 0) putchar('$');
+        else putchar(*(t.pToken));
+    }
+    putchar('\n');
+    for (int i = begin; i < end; ++i) {
+        if (i == left || i == right)
+            putchar('^');
+        else putchar(' ');
+    }
+    putchar('\n');
+}
+
+void Automaton::print_all_stack() {
+    for (int s: LRStack) {
+        printf("%d ", s);
+    }
+    printf("\n");
+    for (int s: SymbolStack) {
+        string str;
+        if (s != 0) str = vmap->find(s);
+        else str = "$";
+        printf("%s ", str.c_str());
+    }
+
+    printf("\n");
 }

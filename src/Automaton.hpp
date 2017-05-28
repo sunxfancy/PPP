@@ -18,6 +18,7 @@
 #include "SharedStack.hpp"
 #include "LexInterface.h"
 
+class VMap;
 class LALRTable;
 class ParallelWorker;
 typedef void* (*AutoCallback)(int bnf_num, const std::vector<void*>& args);
@@ -53,15 +54,20 @@ private:
 
     int Reduce(int size, int Vn, int x);
     void findStack(int x, int Vn);
+
+    void print_all_token(const std::vector<Token> *pVector, int left, int right);
+    void print_all_stack();
+
     /* data */
     LALRTable* table;
 
     AutoCallback function;
     // 分析栈
     std::deque<int> LRStack;
-//    std::deque<void*> NodeStack;
+//    std::deque<int> NodeIntStack;
 
     ParallelWorker* pm;
+    VMap* vmap;
 };
 
 
