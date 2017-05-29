@@ -83,14 +83,14 @@ void Automaton::run_from (int state) {
         }
         char c = table->ACTION(s, t->type);
         int sn = table->GOTO(s, t->type);
-        if (begin != 0) {
-            cout << "------------------------" << endl;
-            printf("now: %d, begin: %d, end: %d\n", now, begin, end);
-            printf("Token: %s %d\n", t->pToken, t->type);
-            printf("Stack Top: %d\n", s);
-            print_all_stack();
-            printf("type: %d, action: %c, goto: %d\n", t->type, c, sn);
-        }
+//        if (begin != 0) {
+//            cout << "------------------------" << endl;
+//            printf("now: %d, begin: %d, end: %d\n", now, begin, end);
+//            printf("Token: %s %d\n", t->pToken, t->type);
+//            printf("Stack Top: %d\n", s);
+//            print_all_stack();
+//            printf("type: %d, action: %c, goto: %d\n", t->type, c, sn);
+//        }
         switch (c) {
             case 'a': { // exit
                 // printf("Accept!\n");
@@ -148,7 +148,7 @@ void Automaton::findStack(int x, int Vn) {
     int now_back = this->now;
     int next;
 
-    printf("Begin Search Stack!\n");
+//    printf("Begin Search Stack!\n");
 
     auto& bnf_from = table->bnf_from[x];
     auto& bnf = table->bnfs[x];
@@ -196,19 +196,19 @@ void Automaton::findStack(int x, int Vn) {
         now--;
 
         // check the begin stack
-        printf("Stack empty~\n");
-        for (int j : begin_stack) {
-            printf("%d ", j);
-        }
-        printf("\n");
-        for (int s: begin_symbol) {
-            string str;
-            if (s != 0) str = vmap->find(s);
-            else str = "$";
-            printf("%s ", str.c_str());
-        }
-
-        printf("\n");
+//        printf("Stack empty~\n");
+//        for (int j : begin_stack) {
+//            printf("%d ", j);
+//        }
+//        printf("\n");
+//        for (int s: begin_symbol) {
+//            string str;
+//            if (s != 0) str = vmap->find(s);
+//            else str = "$";
+//            printf("%s ", str.c_str());
+//        }
+//
+//        printf("\n");
 
         run_from();
 

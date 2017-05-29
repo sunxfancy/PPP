@@ -26,9 +26,9 @@ extern timespec diff(timespec start, timespec end);
 
 void thread_task(ParallelWorker* pw) {
     timespec time1, time2;
-    clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &time1);
+    clock_gettime(CLOCK_REALTIME, &time1);
     pw->run();
-    clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &time2);
+    clock_gettime(CLOCK_REALTIME, &time2);
     pw->time = diff(time1, time2).tv_nsec;
 }
 
@@ -58,7 +58,7 @@ void ParallelManager::split(int n) {
     std::vector<ParallelWorker*> pws;
     timespec time, time1, time2;
 
-    clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &time1);
+    clock_gettime(CLOCK_REALTIME, &time1);
     for (int i = 0; i < n; ++i) {
         ParallelWorker* pm = create_worker(i, n);
         std::thread* t = new std::thread(thread_task, pm);
@@ -70,20 +70,20 @@ void ParallelManager::split(int n) {
         t->join();
         delete t;
     }
-    clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &time2);
+    clock_gettime(CLOCK_REALTIME, &time2);
     time = diff(time1, time2);
     printf("\nall threads running time: %li:%li ns\n", time.tv_sec, time.tv_nsec);
     threads.clear();
 
     combine(pws);
 
-    clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &time1);
+    clock_gettime(CLOCK_REALTIME, &time1);
     countTime(pws);
 
     for (auto* p : pws) {
         delete p;
     }
-    clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &time2);
+    clock_gettime(CLOCK_REALTIME, &time2);
     time = diff(time1, time2);
     printf("\ncleaning time: %li:%li ns\n", time.tv_sec, time.tv_nsec);
 }
@@ -126,9 +126,9 @@ Token* TokenFliter(VMap* vmap, Token* token) {
 
 void ParallelManager::run_lex(const std::string& path) {
     timespec time1, time2;
-    clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &time1);
+    clock_gettime(CLOCK_REALTIME, &time1);
     fileReader(path);
-    clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &time2);
+    clock_gettime(CLOCK_REALTIME, &time2);
     timespec time = diff(time1, time2);
     printf("\nfile reading time: %li:%li ns\n", time.tv_sec, time.tv_nsec);
     lex->setData(data.c_str());
@@ -153,11 +153,11 @@ void ParallelManager::fileReader(const std::string& path) {
 }
 
 bool ParallelManager::combine(std::vector<ParallelWorker*>& pws) {
-    int c = 1;
-    for (auto p: pws) {
-        printf("part %d:\n", c++);
-        p->printAll();
-    }
+//    int c = 1;
+//    for (auto p: pws) {
+//        printf("part %d:\n", c++);
+//        p->printAll();
+//    }
 
     auto p = pws.begin();
     Combine comb(*p);

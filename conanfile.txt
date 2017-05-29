@@ -1,5 +1,10 @@
 [requires]
+gtest/1.8.0@lasote/stable
 estring/1.2.1@sunxfancy/stable
 
 [generators]
 cmake
+
+[options]
+gtest:shared=False
+estring:shared=False

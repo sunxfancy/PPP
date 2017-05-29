@@ -21,16 +21,16 @@ extern timespec diff(timespec start, timespec end);
 
 AUTOMATON_TEST (Construction)
 {
-    App app("test.txt", "libparser.so", 2);
-    app.loadLibrary();
+    App app("test.txt", "", "", 2);
+    app.LoadFile();
     ParallelWorker* pw =  app.pm->create_worker(1, 2);
     EXPECT_NE(pw, nullptr);
 }
 
 AUTOMATON_TEST (Combine)
 {
-    App app("t100.txt", "libparser.so", 2);
-    app.loadLibrary();
+    App app("t100.txt", "", "", 2);
+    app.LoadFile();
     app.run_lex();
 
     ParallelWorker* pw = app.pm->create_worker(0, 2);
@@ -51,8 +51,8 @@ AUTOMATON_TEST (Combine)
 
 AUTOMATON_TEST (Split)
 {
-    App app("t100.txt", "libparser.so", 5);
-    app.loadLibrary();
+    App app("t100.txt", "", "",  5);
+    app.LoadFile();
     app.run_lex();
 
     ParallelWorker* pw = app.pm->create_worker(0, 5);
@@ -67,8 +67,8 @@ AUTOMATON_TEST (Split)
 
 AUTOMATON_TEST (Running)
 {
-    App app("test.txt", "libparser.so", 3);
-    app.loadLibrary();
+    App app("test.txt", "", "",  3);
+    app.LoadFile();
     app.run_lex();
 
     ParallelWorker* pw = app.pm->create_worker(0, 3);
@@ -88,8 +88,8 @@ AUTOMATON_TEST (Running)
 
 AUTOMATON_TEST (Run5)
 {
-    App app("t100.txt", "libparser.so", 5);
-    app.loadLibrary();
+    App app("t100.txt", "", "", 5);
+    app.LoadFile();
     app.run_lex();
 
     ParallelWorker* pw2 = app.pm->create_worker(1, 3);
@@ -102,30 +102,30 @@ AUTOMATON_TEST (Run5)
 AUTOMATON_TEST (SpeedTest)
 {
     timespec time, time1, time2;
-    clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &time1);
-    App app("test.txt", "libparser.so", 1);
-    clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &time2);
+    clock_gettime(CLOCK_REALTIME, &time1);
+    App app("MOCK_DATA.json", "lex.cfg.lexsave", "parser.cfg.lrsave", 1);
+    clock_gettime(CLOCK_REALTIME, &time2);
     time = diff(time1, time2);
     printf("\nInit time: %li:%li ns\n", time.tv_sec, time.tv_nsec);
 
-    clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &time1);
-    app.loadLibrary();
-    clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &time2);
+    clock_gettime(CLOCK_REALTIME, &time1);
+    app.LoadFile();
+    clock_gettime(CLOCK_REALTIME, &time2);
     time = diff(time1, time2);
     printf("\nLoad Library time: %li:%li ns\n", time.tv_sec, time.tv_nsec);
 
-    clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &time1);
+    clock_gettime(CLOCK_REALTIME, &time1);
     app.run_lex();
-    clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &time2);
+    clock_gettime(CLOCK_REALTIME, &time2);
     time = diff(time1, time2);
     printf("\nRun Lex time: %li:%li ns\n", time.tv_sec, time.tv_nsec);
 
 
     for (int k = 1; k <= 4; k++) {
-        clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &time1);
+        clock_gettime(CLOCK_REALTIME, &time1);
 //        for (int i = 0; i < 100; ++i)
             app.run_threads(k);
-        clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &time2);
+        clock_gettime(CLOCK_REALTIME, &time2);
         printf("%d -> %li:%li ns\n---------------------\n", k, diff(time1, time2).tv_sec, diff(time1, time2).tv_nsec);
     }
 }
